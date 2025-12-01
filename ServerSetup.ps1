@@ -1,7 +1,7 @@
 Install-WindowsFeature -Name AD-Domain-Services, DNS, DHCP -IncludeManagementTools
 
-$name = Read-Host "Enter Domain Name "
-$netbiosName = Read-Host "Enter Net BIOS Name "
+$name = Read-Host "Enter Domain Name"
+$netbiosName = Read-Host "Enter Net BIOS Name"
 
 Import-Module ADDSDeployment
 Install-ADDSForest `
