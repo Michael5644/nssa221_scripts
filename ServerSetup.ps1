@@ -1,4 +1,4 @@
-Install-WindowsFeature -Name AD-DomainServices, DNS, DHCP -IncludeManagementTools
+Install-WindowsFeature -Name AD-Domain-Services, DNS, DHCP -IncludeManagementTools
 
 $name = Read-Host "Enter Domain Name: "
 $netbiosName = Read-Host "Enter Net BIOS Name: "
