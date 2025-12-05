@@ -24,7 +24,7 @@ Add-DhcpServerv4Scope -Name $name -StartRange $scopeStart -EndRange $scopeEnd -S
 
 # Exclusions
 Add-DhcpServerv4ExclusionRange -ScopeId $scopeID -StartRange $exStart1 -EndRange $exEnd1 # Excludes your gateway's IP ONLY. (PFsenses' gateway, write the same IP for both fields)
-Add-DhcpServerv4ExclusionRange -ScopeId $scopeID -StartRange $exStart2 -EndRange $exEnd2 # The actual exclusion range. It can be something like: 192.168.1.1 to 192.168.1.10
+Add-DhcpServerv4ExclusionRange -ScopeId $scopeID -StartRange $exStart2 -EndRange $exEnd2 # The actual exclusion range. It can be something like: 192.168.1.1 to 192.168.1.10 (DO NOT include the gateway's IP!!!)
 
 # Gateway
 Set-DhcpServerv4OptionValue -ScopeId $scopeID -Router $gateway
