@@ -6,4 +6,6 @@ $credentials = Get-Credential -UserName $fullUser -Message "Enter password for D
 
 Add-Computer -DomainName gpavks.com -Credential $credentials
 
+# If this fails, your primary DNS is NOT the web server's IP!!!! Fix it!!!
+
 Restart-Computer
