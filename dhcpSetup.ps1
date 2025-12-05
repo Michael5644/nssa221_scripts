@@ -8,6 +8,10 @@ $subnetMask = Read-Host "Enter Subnet Mask" # Usually 255.255.255.0, length is 2
 $gateway = Read-Host "Enter Default Gateway IP" # Use PFSenses' gateway IP
 $dnsPrimary = Read-Host "Enter Primary DNS IP" # Put the web server's IP in this section. NOT 127.0.0.1
 $dnsSecondary = Read-Host "Enter Secondary DNS IP" # 8.8.8.8
+$exStart1 = Read-Host "Enter Exclusion Range 1 Start IP"
+$exEnd1 = Read-Host "Enter Exclusion Range 1 End IP"
+$exStart2 = Read-Host "Enter Exclusion Range 2 Start IP"
+$exEnd2 = Read-Host "Enter Exclusion Range 2 End IP"
 
 $scopeID = ($scopeStart.Split('.')[0..2] -join ".") + ".0"
 
