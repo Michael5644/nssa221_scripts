@@ -20,7 +20,6 @@ New-ADUser `
 -Enabled $true `
 -ChangePasswordAtLogon $false `
 -PasswordNeverExpires $true `
--UserCannotChangePassword $true
 
 # Add to Domain Admins
 Add-ADGroupMember -Identity "Domain Admins" -Members $sam
