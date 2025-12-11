@@ -9,7 +9,7 @@ $password = ConvertTo-SecureString $passwordPlain -AsPlainText -Force
 $domain = (Get-ADDomain).DNSRoot
 $userlogon = "$sam@$domain"
 
-# Creates the user
+# Creates the user (standard domain user)
 New-ADUser `
 -Name "$first $last" `
 -GivenName $first `
@@ -20,6 +20,3 @@ New-ADUser `
 -Enabled $true `
 -ChangePasswordAtLogon $false `
 -PasswordNeverExpires $true
-
-# Add to Domain Admins
-Add-ADGroupMember -Identity "Domain Admins" -Members $sam

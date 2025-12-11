@@ -1,0 +1,23 @@
+GPO Part 1: NoControlPanel
+1. Server Manager → Tools → Group Policy Management
+2. Expand the domain menu → Right click on your domain → 'Create a GPO in this domain, and Link it here'
+3. In the New GPO window, enter a name. It can be anything, like 'NoControlPanel' to restrict user access to the Control Panel
+4. Right click on the newly created GPO → Edit
+5. Navigate to User Configuration → Policies → Administrative Templates → Control Panel folder. In the right pane, double-click “Prohibit access to Control Panel and PC settings”.
+6. Select Enabled → Apply → OK
+7. Return to the Windows 11 client and login in using a non-admin user account (Use the NonAdminAddUser script).
+8. Open Command Prompt → type the command 'gpupdate'
+9. Try to open control panel. You should be restricted.
+
+
+GPO Part 2: GPO for Desktop Wallpaper
+1. Create an OU: Tools → ADUC → Right click on domain folder (or your own domain, find out) → New → Organization Unit
+2. Right click OU → Create a GPO and link it here
+3. Name it, something like 'DesktopWallpaper'
+4. Right click the GPO → Edit
+5. User Configuration → Policies → Administrative Templates → Desktop → Desktop Wallpaper. Right pane, double-click/select.
+6. Set it as enabled → Apply → OK (Name it if needed)
+7. Wallpaper name: \\server\share\wallpaper.jpg (Wallpaper style: Fill)
+8. Return to the Windows 11 client and login in using a non-admin user account IN THE OU. (Use the script, and add that to the OU!)
+9. Open Command Prompt → type the command 'gpupdate'
+10. Verify.
