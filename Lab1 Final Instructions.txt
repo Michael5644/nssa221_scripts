@@ -1,0 +1,97 @@
+Get-Content <file> to see the contents in PowerShell. THERE'S ADVICE IN THERE!!!
+
+DNS addresses (For the COMPUTER, NOT DHCP DNS! (Only 8.8.8.8 as the secondary DHCP DNS. Primary DHCP DNS would be the web server's IP)):
+	127.0.0.1
+	8.8.8.8
+
+Lab 1 commands:
+	Rocky Linux (Change hostname): sudo hostnamectl set-hostname <hostname>.<rit-username>.com
+	Windows (Change hostname): Rename-Computer -NewName <hostname> -Restart
+
+GitHub install (web server): winget install Git.Git
+	Open new powershell window after download complete. Use git --version to check.
+	git clone https://github.com/Michael5644/nssa221_scripts
+	cd into the repository.
+
+On Rocky Linux: sudo dnf install -y git
+	Verify via git --version
+	Navigate to the directory you want the repo in
+	Clone with: git pull https://github.com/Michael5644/nssa221_scripts.git (MUST INCLUDE .git AT THE END)
+	Enter the repo with cd, git pull to update it
+
+PFsense (Get a linked clone):
+1. Configure NIC (VM settings) and get a total of 2 adapters
+	Adapter 1 is WAN (NAT). Nothing needs to be done after.
+
+	Adapter 2 is LAN (LAN). Add LAN segment and select it.
+
+	Record each mac addresses on the adapters.
+
+2. In the pfsense terminal: Select 1: Assign interface -> No to VLANS -> set WAN to the mac address of the NAT, and set LAN to the mac address of the LAN.
+
+3. Set LAN IP: Select 2: Set interface(s) IP address -> set LAN (Static) -> No to configure via DHCP -> assign static address as specified (Example: 192.168.1.1/24)
+	Press enter to skip upstream gateway.
+	No to IPv6 via DHCP
+	Do not enable DHCP on LAN. 
+	Skip IPv6. 
+	Yes to HTTP.
+
+
+Windows Server (Get a linked clone):
+1. Turn NAT into LAN, attach the same LAN segment, log in as student (password: student)	
+	In the web server search bar, search 'View network connection'
+	Choose the required connection -> properties
+	Select internet protocal version 4 -> properties
+	Click 'use the following', set a static IPv4 configuration according to instructions.
+	Gateway IP is your pfSense LAN IP.
+	(/24 means 255.255.255.0)
+	Windows (Change hostname): Rename-Computer -NewName <hostname> -Restart
+
+	
+2. Ping to verify connectivity. (Ping pfsense LAN IP, or http://<pfsense LAN IP> in web server
+	(Fun fact command, use in powershell ADMIN): To enable DHCP via command, do Set-NetIPInterface -InterfaceAlias <adapter name here> -Dhcp Enabled
+	
+	To get the adapter name, do Get-NetAdapter
+
+	DHCP command for DNS: Set-DnsClientServerAddress -InterfaceAlias "Ethernet" -ResetServerAddresses
+
+
+Rocky Linux (Get linked clone):
+1. Turn NAT in LAN, attach same LAN segment.
+
+2. Set hostname with FQDN. (<hostname>.<rit-username>.com, or whatever the instructions specify.)
+	sudo su - (or just sudo if doesn't work)
+	hostnamectl set-hostname <the FQDN for the system>
+	hostnamectl to check.
+
+3. Assign static IPv4 with nmcli. Steps:
+	nmcli connection edit <ens-number> (find the ens# with 'ip addr' in the terminal)
+	set ipv4.addresses <ip specified by task> (example: <192.168.1.3/24>)
+		Say yes to manual
+	set ipv4.gateway <pfSence LAN ip>
+	set ipv4.dns 8.8.8.8
+	save
+	quit
+	nmcli
+
+	Reboot nmcli. Do:
+	nmcli connection down <ens-number>
+	nmcli connection up <ens-number>
+
+
+Windows 11 Client (Get linked clone):
+1. Turn NAT into LAN, attach the same LAN segment.
+
+2. Rename computer in Powershell admin with: Rename-Computer -NewName <hostname> -Restart (ONLY the hostname. Not the entire FQDN.)
+
+3. Using Powershell Admin:
+	Get-NetAdapter, find the Interface Index #
+
+	New-NetIPAddress -InterfaceIndex <#> `
+	-IPAddress <Whatever IP instructions say> `
+	-PrefixLength <Whatever task says> `
+	-DefaultGateway <pfSense LAN IP>
+
+	Set-DnsClientServerAddress `
+	-InterfaceIndex <#> `
+	-ServerAddresses (<Whatever task says>) -- Example: ("192.168.1.2", "8.8.8.8") # Primary DNS is web server's IP!! Required!!
