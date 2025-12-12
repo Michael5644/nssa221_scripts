@@ -1,0 +1,39 @@
+RAID 1: 
+Create a new rocky linux VM, add in 8 additional hard disk drives. 
+NVMe → create a new virtual disk → set to 4 GB each → name them storage0, 1, so on → put as same folder as the linked clone.
+
+1. lsblk, then: Using the mkfs command format the first drive that you added to the virtual machine. Caution: NOT the system drive, which contains the boot partition, referring to Figure 4 that would be nvme0n1. More than likely the first newly added drive will be nvme0n2.
+2. Format command: mkfs.xfs /dev/nvme0n2
+3. Create the directory /media/samba, this will be used to mount the newly reformatted drive. Mount command: mount <device> <mount point>
+4. mount /dev/nvme0n2 /media/samba, then df -h to verify
+
+5. By convention /dev/md0 (multiple disk 0) is use to identify the first RAID, the second will be /dev/md1, and so on. 
+• Additional information you will need is the RAID “level” and the number of devices. 
+• Use two unused drives, assuming that the system drive is nvme0n1, and the drive you mounted in Activity 2 was nvme0n2, the next two available drives are nvme0n3, and nvme0n4. 
+
+6. Create RAID 1 array: mdadm --create /dev/md0 --level=1 --raid-devices=2 /dev/nvme0n3 /dev/nvme0n4
+7. Verify raid via 'cat /proc/mdstat'
+8. Partition RAID device via 'fdisk /dev/md0'
+9. First partition: m → o (MBR/DOS partition table) → n → p/e (primary/extended, choose one) → Press Enter (Defaults to partition #1) → Press Enter (Defaults to First sector)
+→ +1G (Sets Partition 1 to 1GB, and primary)
+10. Second partition: n → e (extended) → Enter (Defaults to next available) → Enter → Enter (Uses all remaining space)
+11. Third partition: n (Auto logical partition, primary and extended are used up) → Enter → Enter
+12 At the prompt, type 'w' to writes the 3 to disk, and exits fdisk
+13. 'ls /dev | grep md0' to verify. p1 is primary, p2 is extended, p5 is logical
+14. Format the primary and logical partitions using a file system: mkfs.xfs /dev/md0p1 | mkfs.xfs /dev/md0p5
+15. Create two directories /media/nfs1 and /media/nfs2 and mount the partition to them.
+• mount /dev/md0p1 /media/nfs1   |   mount /dev/md0p5 /media/nfs2
+
+
+RAID 5:
+1. Create RAID 5 array: mdadm --create /dev/md1 --level=5 --raid-devices=3 /dev/nvme0n5 /dev/nvme0n6 /dev/nvme0n7
+2. Verify raid via 'cat /proc/mdstat'
+3. Partition RAID device via 'gdisk /dev/md1'
+4. First partition: m → o (Confirm when prompted) → n → Enter → Enter → +2G → Enter
+5. Second partition: n → Enter → Enter → +2G → Enter
+6. Third partition: n → Enter → Enter → +2G → Enter
+7. w → y
+8. Format all 3: mkfs.xfs /dev/md1p1; mkfs.xfs /dev/md1p2; mkfs.xfs /dev/md1p3
+9. 'ls /dev | grep md1' to confirm
+10. Create the directories /media/samba1, /media/samba2 and /media/samba3 and mount the partitions.
+• mount /dev/md1p1 /media/samba1   |   mount /dev/md1p2 /media/samba2   |   mount /dev/md1p3 /media/samba3
