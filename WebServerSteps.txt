@@ -1,0 +1,52 @@
+Web Server with Virtual Host
+
+0. Login as root in the client Rocky VM
+1. dnf update -y
+2. dnf install httpd -y
+3. Create new directory: mkdir -p /www/site1
+4. Create an index file in it: nano /www/site1/index.html
+5. Add content into the index.html file, can be anything
+6. Save and exit, then set permissions: chmod -R 755 /www
+7. Open Apache's main configuration file: nano /etc/httpd/conf/httpd.conf
+8. Add this following block into the httpd.conf file:
+<Directory "/www/site1">
+    AllowOverride None
+    Require all granted
+</Directory>
+9. Save and exit.
+
+10. Start and enable Apache: systemctl enable httpd; systemctl start httpd
+11. Create a basic virtual host configuration file: nano /etc/httpd/conf.d/site1.conf
+12. Add the following block into the site1.conf file:
+<VirtualHost *:80>
+    DocumentRoot /www/site1
+    ServerName www.mc5644.com
+    ErrorLog logs/www.mc5644.com-error.log
+</VirtualHost>
+13. Save and exit.
+
+14. Restart Apache: systemctl restart httpd
+15. Verify: curl http://www.mc5644.com
+
+16. Demonstrate remote access: firewall-cmd --permanent --add-service=http; firewall-cmd --reload
+17. hostname -I; go on a remote machine and open brower: http://<server-ip>
+
+Virtual host for second website (Same exact steps, but):
+1. Create new directory: mkdir -p /www/site2
+2. Create an index file in it: nano /www/site2/index.html
+3. Add content into the index.html file, can be anything
+4. nano /etc/httpd/conf.d/site2.conf
+5. Add:
+<VirtualHost *:80>
+    ServerName site2.mc5644.com
+    DocumentRoot /www/site2
+    ErrorLog logs/site2.mc5644.com-error.log
+</VirtualHost>
+6. systemctl restart httpd
+
+Creating CNAMEs
+1. Windows Server: Server Manager -> Tools -> DNS
+2. Expand forward lookup zones -> mc5644.com
+3. Create CNAME records: www points to Apache server, site2 points to Apache server
+4. Verify from client Rocky: nslookup www.mc5644.com; nslookup site2.mc5644.com
+
