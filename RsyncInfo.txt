@@ -1,0 +1,59 @@
+Rsync info and examples using the commands
+
+1. Basic local backup (archive + verbose)
+Command: rsync -av original/ backup/
+Purpose: Copies all files and directories from original to backup, preserving metadata.
+
+2. Log rsync output to a file
+Command: rsync -av original/ backup --log-file=abc1234.log
+Purpose: Records rsync statistics such as bytes sent/received.
+
+3. Exclude files by extension
+Command: rsync -av --exclude '*.jpg' original/ backup
+Purpose: Copies everything except .jpg files.
+
+4. Delete destination files not in source
+Command: rsync -av --delete original/ backup
+Purpose: Makes destination an exact mirror of source.
+
+5. Test rsync without making changes
+Command: rsync -av --dry-run original/ destination/
+Purpose: Shows what would happen without copying files.
+
+6. Move files instead of copying (dry run)
+Command: rsync --dry-run --remove-source-files -av original/ destination/
+Purpose: Simulates moving files by deleting them from the source after transfer.
+
+7. Move files instead of copying (actual)
+Command: rsync --remove-source-files -av original/ destination/
+Purpose: Transfers files and removes them from the source directory.
+
+Lab 5, Activity 7: Rsync server example
+On the rocky server (storage) side:
+1. Login as root.
+2. dnf install rsync -y
+3. firewall-cmd --permanent --add-port=873/tcp; firewall-cmd --reload
+4. Create a directory to export via rsync: mkdir -p /media/rsync
+5. Set permissions: chmod 755 /media/rsync
+6. Create the rsync configuration file: nano /etc/rsyncd.conf
+7. Append the following lines into the file: (Module name can be something like Ramones)
+    [Ramones] 
+    chroot = false 
+    path = /media/rsync 
+    comment = Ramones RSYNC Module 
+    read only = yes 
+    list = yes 
+    uid = nobody 
+    gid = nobody
+8. Save and exit.
+
+9. Restart rsync: systemctl restart rsyncd
+10. Enable rsync: systemctl enable rsyncd
+11. Create a file in /media/rsync and add content to it (i.e. test.txt). 
+
+
+GO TO THE CLIENT (We are currently on the server): dnf install rsync -y
+1. List the available RSYNC modules on storage: rsync <rsync-server-hostname>::
+2. List the contents of the ramones module directory: rsync <rsync-server-hostname>::ramones/
+3. Copy a file from the rsync server: rsync <rsync-server-hostname>::ramones/test.txt ./
+4. Veerify rsync activity ON THE SERVER via logs: grep -ir ramones /var/log | tail -3
