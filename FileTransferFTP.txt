@@ -1,0 +1,23 @@
+FTP Server: vsftpd
+FTP User: ftpuser
+
+0. Create a new Rocky Linux VM, call it storage. Configure it with the same instructions as the client Rocky VM, just with a new IP. (Check Lab1 Final)
+1. Log into Rocky Linux as root, update system via 'dnf update -y'
+2. Install vsftpd: dnf install vsftpd -y
+3. Configure: systemctl enable vsftpd
+4. Start: systemctl start vsftpd
+5. Verify: systemctl status vsftpd
+6. Create user: useradd ftpuser
+7. Set password: passwd ftpuser
+8. Set directory: mkdir -p /home/ftpuser
+9. Set permissions: chown ftpuser:ftpuser /home/ftpuser; chmod 755 /home/ftpuser
+10. Open configuration file: nano /etc/vsftpd/vsftpd.conf
+
+11. Ensure these settings are right:
+• local_enable=YES
+• write_enable=YES
+• chroot_local_user=YES
+• allow_writeable_chroot=YES
+
+12. Save and exit the file.
+13. Restart vsftpd to apply changes: systemctl restart vsftpd
