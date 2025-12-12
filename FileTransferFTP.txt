@@ -4,20 +4,34 @@ FTP User: ftpuser
 0. Create a new Rocky Linux VM, call it storage. Configure it with the same instructions as the client Rocky VM, just with a new IP. (Check Lab1 Final)
 1. Log into Rocky Linux as root, update system via 'dnf update -y'
 2. Install vsftpd: dnf install vsftpd -y
-3. Configure: systemctl enable vsftpd
-4. Start: systemctl start vsftpd
-5. Verify: systemctl status vsftpd
-6. Create user: useradd ftpuser
-7. Set password: passwd ftpuser
-8. Set directory: mkdir -p /home/ftpuser
-9. Set permissions: chown ftpuser:ftpuser /home/ftpuser; chmod 755 /home/ftpuser
-10. Open configuration file: nano /etc/vsftpd/vsftpd.conf
+3. firewall-cmd --permanent --add-port=21/tcp
+4. firewall-cmd --permanent --add-service=ftp
+5. firewall-cmd --reload
+6. Configure: systemctl enable vsftpd
+7. Start: systemctl start vsftpd
+8. Verify: systemctl status vsftpd
+9. Create user: useradd ftpuser
+10. Set password: passwd ftpuser
+11. Set directory: mkdir -p /home/ftpuser
+12. Set permissions: chown ftpuser:ftpuser /home/ftpuser; chmod 755 /home/ftpuser
+13. Open configuration file: nano /etc/vsftpd/vsftpd.conf
 
 11. Ensure these settings are right:
-• local_enable=YES
-• write_enable=YES
-• chroot_local_user=YES
-• allow_writeable_chroot=YES
+- local_enable=YES
+- write_enable=YES
+- anonymous_enable=YES
+- anon_upload_enable=YES
+- anon_mkdir_write_enable=YES
+- chown, chownusername->root
 
 12. Save and exit the file.
 13. Restart vsftpd to apply changes: systemctl restart vsftpd
+
+
+NOW, go onto the client Rocky VM, login as root
+1. dnf install lftp -y
+2. Connect to FTP server: lftp -u ftpuser <storage hostname OR storage-Rocky-IP-address>
+3. Enter password if prompted
+4. Create and put file: put testfile.txt
+5. Verify: ls, then 'exit' to leave FTP.
+6. File should appear in the ftpuser's repo on the server (storage rocky)'s side.
