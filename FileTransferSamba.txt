@@ -1,0 +1,54 @@
+Prerequisites:
+Log in to the Rocky Linux storage server
+Open a terminal
+Update the system: dnf update -y
+
+Steps:
+
+Install Samba packages: dnf install samba samba-client -y
+
+Create the shared directory: mkdir /media/samba
+
+Set permissions on the directory: chmod 777 /media/samba
+
+Edit the Samba configuration file: nano /etc/samba/smb.conf
+
+Add the following share definition:
+
+[sambashare]
+    path = /media/samba
+    browsable = yes
+    writable = yes
+    guest ok = yes
+    read only = no
+
+
+Save and exit the file
+
+Enable Samba services: systemctl enable smb nmb
+
+Start Samba services: systemctl start smb nmb
+
+Allow Samba through the firewall: firewall-cmd --permanent --add-service=samba
+
+Reload the firewall: firewall-cmd --reload
+
+Check Samba service status: systemctl status smb
+
+Check NetBIOS service status: systemctl status nmb
+
+
+Client Access Verification:
+From Linux Client
+
+List available Samba shares: smbclient -L //<samba-server-ip> -N
+
+Connect to the Samba share: smbclient //<samba-server-ip>/sambashare -N
+
+From Windows Client
+
+Open File Explorer
+
+In the address bar, enter: \\<samba-server-ip>\sambashare
+
+Press Enter and verify access
