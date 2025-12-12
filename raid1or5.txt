@@ -37,3 +37,10 @@ RAID 5:
 9. 'ls /dev | grep md1' to confirm
 10. Create the directories /media/samba1, /media/samba2 and /media/samba3 and mount the partitions.
 • mount /dev/md1p1 /media/samba1   |   mount /dev/md1p2 /media/samba2   |   mount /dev/md1p3 /media/samba3
+
+
+Persistent mount:
+1. To mount on boot, you will need to place an entry in the /etc/fstab file (nano /etc/fstab).
+2. Find UUID via 'blkid'. Look for the the drive you mounted (/dev/nvme0n2) and the 5 mounts you did.
+3. Copy them and paste into /etc/fstab file, following the format of the LINES NOT IN COMMENTS. (Format: <UUID> <mount-location> <xfs (or any other format)> defaults 0 0)
+4. Save and exit. Test via 'mount -a'. If no errors, it works. Finally, verify via 'mount | grep media'.
