@@ -1,0 +1,68 @@
+Crontab location: /var/spool/cron/<username>
+The file is created only after the user creates their first cron job.
+
+Crontab file format (* * * * * <file location>):
+<minute> <hour> <day-of-month> <month> <day-of-week> <command/message-in-quotes/executable in a file location>
+
+Note: <hour> is in the 24-hour format. 8 AM is 8, while 8 PM would be 20.
+
+Example: 30 08 10 06 * /home/backups/full-backup.sh
+Runs the shell script “full-backup.sh” on June 10th (10, 06); at 8:30 AM (30, 08); on every day of the week (*)
+
+Leaving a section as a * means it will be run on every (unit) on that specific slot
+
+Example 2: 00 11, 16 * * * /home/bin/incremental-backup.py
+Runs the python script "incremental-backup.py" on every day, every month, and on every day of the week (* * *); at 11:00 AM and 4:00 PM (00 11, 16)
+00 is the 0th minute. 59 would be 59th minute, etc.
+
+To add an entry to the crontab file use the crontab –e command as the current user. 
+The user that creates the job must also be the same user that is the owner of the script.
+
+Don't edit /etc/crontab directly via nano, vim, etc. Always use the crontab utilities:
+crontab –l     lists the user’s crontab. 
+crontab –e     edits the user’s crontab. 
+crontab –r     deletes the user’s crontab. 
+
+
+Cronjob entry example:
+Rocky client:
+
+crontab -e
+* * * * * logger "CRON TEST MESSAGE"
+Save and exit.
+
+Rocky log server (ANOTHER ROCKY VM):
+- Displays the messages in /var/log/messages
+
+To find the messages, use: tail –f /var/log/messages | grep <keyword in the crontab you sent from client>
+
+
+CONNECTING THE TWO ROCKY VMs TOGETHER:
+On the rocky log server (not client):
+1. Login as root
+2. nano /etc/rsyslog.conf (or /etc//resyslog.conf if you don't find the content in the first one)
+3. Uncomment or add the following block in the configuration file:
+    module(load=”imudp”) # needs to be done just once 
+    input(type=”imudp” port=”514”)
+    module(load=”imtcp”) # needs to be done just once 
+    input(type=”imtcp” port=”514”)
+
+4. Save and exit
+5. Create a firewall rule to allow traffic through the port rsyslog is listening on, which is port 514. Also enable TCP and UDP.
+    firewall-cmd --permanent --add-port=514/udp
+    firewall-cmd --permanent --add-port=514/tcp
+    firewall-cmd --reload
+
+6. Restart rsyslog: systemctl restart rsyslog
+
+
+On the rocky client:
+1. nano /etc/rsyslog.conf
+2. Add this line to the end of the file: *.* @@<server IP Address or hostname>:514 
+3. Restart rsyslog: systemctl restart rsyslog
+
+Verify:
+1. On the log server, start watching logs: tail -f /var/log/messages
+2. On the client, send a test message: logger "Sending Test Message"
+3. If it appears in the log server, good.
+4. Proceed to run a cronjob. (View entry example above for the instructions.)
