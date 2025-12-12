@@ -13,6 +13,34 @@ On Windows Server:
 4. Follow the installer using default settings unless specified otherwise
 5. When prompted input a name and the company (make it up), and click Next.
 6. Hit Next a bunch of times until you get to “Get Postoffice Details.” The Post Office Name field will be populated with your domain (not mine, like Figure 30). And enter a password, then hit Next.
+7. Hit next a couple more times and verify that the information in the SMTP Connector Configuration is correct. Again, it should be your domain, and DNS information.
+8. Hit next a couple more times, until you come to the “Select Webmail Web Root,” windows. Make sure that the box is checked and the default web site is selected.
+- If the box is not checked, you didn't download Web Server (IIS)
+9. Hit next, and wait. Hit next again, finish.
+10. Find MailEnable in your programs list, select it to open the program.
+11. From the MailEnable Management menu, expand “Messaging Manager,” then “Post Offices,” select your domain and on the right under Actions, select Create Mailbox.
+12. Create whatever account names and passwords you want.
+13. 
+
+Rocky Linux:
+Install thunderbird (as root): dnf install thunderbird -y
+1. Launch Thunderbird. To add an account, right click on “Local Folders,” and select settings. 
+2. From the “Account Settings” window select “Account Actions” and the “Add Mail Account… ”.
+3. Enter the user information for one of the accounts. Click Continue. 
+4. If you have DNS configured correctly (especially the MX resource record), then Thunderbird will find your mail server automatically and all you need to do is click Done.
+    If not, you’ll need to do some troubleshooting. By default, Thunderbird uses the FQDN of the mail server. Select 
+    “Manual Configuration,” and check to see if it is using the FQDN, if not enter it. If it is still not connecting try 
+    entering the IP Address of the server, if that works then your issue is with DNS. If not then check firewall settings, 
+    trying pinging the mail server from the client to make sure there is network connectivity. Does DNS resolve to the 
+    correct IP for the mail server
+
+    Once the correct hostname for the mail server is configured and the ports are populated, click Done. Because we 
+    did not configure Transport Layer Security for the mail server, a warning is shown (Figure 44), check the box “I 
+    understand the risks.” Click “Confirm,” and then “Finish”. 
+
+    If everything goes well, you should see the mailbox and an email notification. To do a quick test, try 
+    sending an email to the user to see if they receive it. Using this as an example, starlord would send an email to 
+    itself. 
 
 
 Windows Client:
