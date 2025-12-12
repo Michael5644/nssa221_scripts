@@ -1,5 +1,7 @@
 Get-Content <file> to see the contents in PowerShell. THERE'S ADVICE IN THERE!!!
 
+dnf install wireshark wireshark-cli -y
+
 DNS addresses (For the COMPUTER, NOT DHCP DNS! (Only 8.8.8.8 as the secondary DHCP DNS. Primary DHCP DNS would be the web server's IP)):
 	127.0.0.1
 	8.8.8.8
