@@ -1,0 +1,19 @@
+On Windows Server:
+1. Ensure Web Server (IIS) is already installed with its default roles (Server Manager -> Add roles and features)
+2. Powershell Admin, run the following:
+    Invoke-WebRequest `
+    -Uri "https://www.mailenable.com/Standard-Edition-Download.aspx" `
+    -OutFile "C:\MailEnable-Standard.exe"
+
+    or 
+
+    curl -L "https://www.mailenable.com/standard1054.exe" -o "standard1054.exe"
+
+3. Run the installer: Start-Process "C:\MailEnable-Standard.exe"
+4. Follow the installer using default settings unless specified otherwise
+5. When prompted input a name and the company (make it up), and click Next.
+6. Hit Next a bunch of times until you get to “Get Postoffice Details.” The Post Office Name field will be populated with your domain (not mine, like Figure 30). And enter a password, then hit Next.
+
+
+Windows Client:
+Install thunderbird: winget install Mozilla.thunderbird
