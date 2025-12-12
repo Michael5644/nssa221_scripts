@@ -1,4 +1,4 @@
-Install-WindowsFeature -Name AD-Domain-Services, DNS, DHCP -IncludeManagementTools
+Install-WindowsFeature -Name AD-Domain-Services, DNS, DHCP, GPMC -IncludeManagementTools
 
 $name = Read-Host "Enter Domain Name" # Example: mc5644.com. NOT the full FQDN which is <hostname>.<rit-username>.com
 $netbiosName = Read-Host "Enter Net BIOS Name" # Basically domain name but in all caps, without the .com

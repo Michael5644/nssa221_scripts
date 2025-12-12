@@ -48,7 +48,7 @@ Windows Server (Get a linked clone):
 	Windows (Change hostname): Rename-Computer -NewName <hostname> -Restart
 
 	
-2. Ping to verify connectivity. (Ping pfsense LAN IP, or http://<pfsense LAN IP> in web server
+2. Ping to verify connectivity. (Ping pfsense LAN IP, or http://<pfsense LAN IP> in web server)
 	(Fun fact command, use in powershell ADMIN): To enable DHCP via command, do Set-NetIPInterface -InterfaceAlias <adapter name here> -Dhcp Enabled
 	
 	To get the adapter name, do Get-NetAdapter
